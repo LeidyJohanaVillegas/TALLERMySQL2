@@ -6,7 +6,7 @@ Taller de practica Skill MySQL2
 
 Este taller está diseñado para profundizar en el manejo y optimización de bases de datos MySQL. A través de ejercicios prácticos, se explorarán temas avanzados para reforzar el conocimiento en normalización, joins, consultas complejas, subconsultas, procedimientos almacenados, funciones definidas por el usuario y triggers. Requisitos previos: Conocimiento básico de SQL y MySQL MySQL instalado y configurado en tu máquina Objetivos: Al finalizar este taller, el participante será capaz de: 1. Diseñar bases de datos optimizadas mediante técnicas de normalización. 2. Realizar consultas avanzadas en múltiples tablas. 3. Utilizar subconsultas para consultas complejas. 4. Crear y ejecutar procedimientos almacenados y funciones definidas por el usuario. 5. Implementar triggers para automatizar operaciones en la base de datos.
 
-
+```
 ## Base de datos
 
 CREATE DATABASE mysql2;
@@ -148,9 +148,9 @@ CREATE TABLE Ubicaciones(
   código_postal VARCHAR(10),
   país VARCHAR(50)
 );
-
+```
 ## Datos ingresados
-
+```
 INSERT INTO UbicacionClientes (direccion, ciudad, estado, codigo_postal, pais) VALUES
 -- Colombia
 ('Calle 123', 'Bogotá', 'Cundinamarca', '110111', 'Colombia'),
@@ -549,12 +549,148 @@ INSERT INTO Ubicaciones (entidad_tipo, entidad_id, dirección, ciudad, estado, c
 ('Cliente', 14, 'Calle 100 #20-50', 'Ciudad de México', 'CDMX', '03100', 'México'),
 ('Proveedor', 10, 'Calle Corrientes 3000', 'Buenos Aires', 'CABA', 'C1043', 'Argentina'),
 ('Empleado', 12, 'Jirón de la Union 500', 'Lima', 'Lima', '15001', 'Perú');
+```
 
+# datos adicionales
+
+```
+mysql> INSERT INTO Productos (nombre, precio, proveedor_id, tipo_id) VALUES
+    -> ('Lavadora Haier 16kg', 780.00, 5, 2),
+    -> ('Lavadora LG 13kg', 890.00, 5, 2),
+    -> ('Lavadora Samsung 18kg', 920.00, 5, 2),
+    -> ('Secadora Mabe 14kg', 770.00, 5, 2),
+    -> ('Lavadora Whirlpool 20kg', 960.00, 5, 2),
+    -> ('Lavadora Electrolux 17kg', 870.00, 5, 2),
+    -> ('Lavadora Daewoo 12kg', 720.00, 5, 2),
+    -> ('Secadora LG 15kg', 880.00, 5, 2);
+Query OK, 8 rows affected (0.00 sec)
+Records: 8  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Proveedores (nombre, dirección) VALUES
+    -> ('Proveedora Andina', 'Av. Los Andes 123'),
+    -> ('Distribuciones Norte', 'Calle Norte 456'),
+    -> ('Suministros del Sur', 'Calle Sur 45'),
+    -> ('TecnoRepuestos', 'Avenida Central 100'),
+    -> ('Importadora Universal', 'Calle 10 #22-33');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> -- Productos para TecnoRepuestos (proveedor_id = 4)
+mysql> INSERT INTO Productos (nombre, precio, proveedor_id, tipo_id) VALUES
+    -> ('Motor Universal 1/2 HP', 350.00, 4, 1),
+    -> ('Correa para lavadora Samsung', 45.00, 4, 1),
+    -> ('Sensor de nivel de agua', 28.50, 4, 1),
+    -> ('Placa electrónica Whirlpool', 110.00, 4, 1),
+    -> ('Valvula de entrada LG', 25.00, 4, 1),
+    -> ('Tubo de drenaje flexible', 18.00, 4, 1),
+    -> ('Amortiguador Bosch', 33.00, 4, 1),
+    -> ('Switch de puerta Electrolux', 19.00, 4, 1);
+Query OK, 8 rows affected (0.01 sec)
+Records: 8  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO DetallesPedido (pedido_id, producto_id, cantidad, precio) VALUES
+    -> (11, 2, 1, 450.00),
+    -> (12, 2, 1, 450.00),
+    -> (13, 2, 1, 450.00),
+    -> (14, 2, 1, 450.00);
+Query OK, 4 rows affected (0.01 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> -- Añadir producto_id 3 con 7 pedidos (entrará en la consulta)
+mysql> INSERT INTO DetallesPedido (pedido_id, producto_id, cantidad, precio) VALUES
+    -> (15, 3, 1, 390.00),
+    -> (16, 3, 1, 390.00),
+    -> (17, 3, 1, 390.00),
+    -> (18, 3, 1, 390.00),
+    -> (19, 3, 1, 390.00),
+    -> (20, 3, 1, 390.00),
+    -> (21, 3, 1, 390.00);
+Query OK, 7 rows affected (0.00 sec)
+Records: 7  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO Empleados (nombre, puesto, salario, fecha_contratacion) VALUES
+    -> ('Ana Pérez', 'Técnico', 1800.00, '2023-01-10'),
+    -> ('Luis Martínez', 'Técnico', 2200.00, '2022-03-15'),
+    -> ('Carla López', 'Técnico', 2500.00, '2021-06-01'),
+    -> ('José Gómez', 'Supervisor', 3000.00, '2020-05-20'),
+    -> ('Laura Jiménez', 'Supervisor', 3500.00, '2019-09-12'),
+    -> ('Pedro Ruiz', 'Supervisor', 2700.00, '2023-11-25'),
+    -> ('Lucía Castro', 'Gerente', 4000.00, '2018-08-08'),
+    -> ('Miguel Ramírez', 'Gerente', 4200.00, '2017-02-02'),
+    -> ('Sofía Sánchez', 'Gerente', 3800.00, '2024-04-30');
+Query OK, 9 rows affected (0.01 sec)
+Records: 9  Duplicates: 0  Warnings: 0
+
+mysql> -- PEDIDOS para Ana (5 pedidos)
+mysql> INSERT INTO Pedidos (cliente_id, fecha) VALUES
+    -> (1, '2025-07-01'),
+    -> (1, '2025-07-02'),
+    -> (1, '2025-07-03'),
+    -> (1, '2025-07-04'),
+    -> (1, '2025-07-05');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> -- PEDIDOS para Carlos (3 pedidos)
+mysql> INSERT INTO Pedidos (cliente_id, fecha) VALUES
+    -> (2, '2025-07-01'),
+    -> (2, '2025-07-03'),
+    -> (2, '2025-07-05');
+Query OK, 3 rows affected (0.00 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> -- PEDIDOS para Marta (1 pedido)
+mysql> INSERT INTO Pedidos (cliente_id, fecha) VALUES
+    -> (3, '2025-07-02');
+Query OK, 1 row affected (0.00 sec)
+
+mysql>
+mysql> -- PEDIDOS para Luis (2 pedidos)
+mysql> INSERT INTO Pedidos (cliente_id, fecha) VALUES
+    -> (4, '2025-07-03'),
+    -> (4, '2025-07-04');
+Query OK, 2 rows affected (0.00 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql> -- Pedidos con distintos totales
+mysql>
+mysql> -- Pedido 1: total 20
+mysql> INSERT INTO Detallespedido (pedido_id, producto_id, cantidad, precio) VALUES
+    -> (1, 1, 2, 10.00);  -- 2 * 10 = 20
+Query OK, 1 row affected (0.01 sec)
+
+mysql>
+mysql> -- Pedido 2: total 45
+mysql> INSERT INTO Detallespedido (pedido_id, producto_id, cantidad, precio) VALUES
+    -> (2, 2, 3, 15.00);  -- 3 * 15 = 45
+Query OK, 1 row affected (0.00 sec)
+
+mysql>
+mysql> -- Pedido 3: total 30
+mysql> INSERT INTO Detallespedido (pedido_id, producto_id, cantidad, precio) VALUES
+    -> (3, 3, 2, 15.00);  -- 2 * 15 = 30
+Query OK, 1 row affected (0.00 sec)
+
+mysql>
+mysql> -- Pedido 4: total 60
+mysql> INSERT INTO Detallespedido (pedido_id, producto_id, cantidad, precio) VALUES
+    -> (4, 4, 4, 15.00);  -- 4 * 15 = 60
+Query OK, 1 row affected (0.00 sec)
+
+mysql>
+mysql> -- Pedido 5: total 10
+mysql> INSERT INTO Detallespedido (pedido_id, producto_id, cantidad, precio) VALUES
+    -> (5, 5, 1, 10.00);  -- 1 * 10 = 10
+Query OK, 1 row affected (0.00 sec)
+```
 
 ## EJERCICIOS 
 
 # 5. SUBCONSULTAS:
-
+```
 5.1. Consultar el producto más caro en cada categoría.
 RTA:
 SELECT p.nombre AS producto, p.precio, tp_padre.tipo_nombre AS categoria FROM Productos p
@@ -714,9 +850,9 @@ SELECT e.id, e.nombre FROM Empleados e JOIN (SELECT puesto, AVG(salario) AS prom
 | 38 | Pedro Ruiz      |
 | 41 | Sofía Sánchez   |
 +----+-----------------+
-
+```
 6. Procedimientos Almacenados 
-
+```
 6.1. Crear un procedimiento para actualizar el precio de todos los productos de un proveedor.
 RTA:
 DELIMITER //
@@ -857,5 +993,5 @@ BEGIN
   LIMIT 1;
 END //
 DELIMITER ;
-
+```
 REALIZADO POR: Leidy Johana Niño Villegas
